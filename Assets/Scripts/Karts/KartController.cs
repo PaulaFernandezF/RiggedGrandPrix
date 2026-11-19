@@ -46,6 +46,33 @@ namespace RiggedGrandPrix.Karts
         public bool IsGrounded { get; private set; }
         public bool IsDrifting { get; private set; }
 
+        // ---- Registro de todos los karts (para el RaceManager) ----
+        public static IReadOnlyList<KartController> All => all;
+        private static readonly List<KartController> all = new List<KartController>();
+
+        private void OnEnable() { if (!all.Contains(this)) all.Add(this); }
+        private void OnDisable() => all.Remove(this);
+
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        private static void ClearStatics() => all.Clear();
+
+        /// <summary>Nueva posición de salida (la parrilla) y lleva el kart allí.</summary>
+        public void SetSpawnPoint(Vector3 position, Quaternion rotation)
+        {
+            spawnPosition = position;
+            spawnRotation = rotation;
+            ResetToSpawn();
+        }
+
+        /// <summary>Mueve el kart a un sitio, parado, sin quitarle los efectos.</summary>
+        public void Teleport(Vector3 position, Quaternion rotation)
+        {
+            rb.position = position;
+            rb.rotation = rotation;
+            transform.SetPositionAndRotation(position, rotation);
+            rb.linearVelocity = Vector3.zero;
+            rb.angularVelocity = Vector3.zero;
+        }
         private void Awake()
         {
             rb = GetComponent<Rigidbody>();
