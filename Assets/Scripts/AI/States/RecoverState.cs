@@ -28,7 +28,7 @@ namespace RiggedGrandPrix.AI
             bool barelyMoved = Vector3.Distance(startPos, rival.transform.position) < 1f;
             bool offTrack = Mathf.Abs(p.LateralOffset) > rival.RoadHalfWidth + 3f;
             if (barelyMoved || offTrack) rival.RespawnOnTrack();
-            return new FollowLineState();
+            return RivalStateFactory.Create(rival.Role);
         }
     }
 }

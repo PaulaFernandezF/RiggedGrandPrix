@@ -12,7 +12,7 @@ namespace RiggedGrandPrix.AI
         protected override IRivalState OnTick(RivalFSMInput rival, RivalPerception p, float dt)
         {
             if (p.StuckTime > 1.5f) return new RecoverState();
-            if (timeInState > 4f || p.KartAhead == null || p.DistanceAhead > 14f) return new FollowLineState();
+            if (timeInState > 4f || p.KartAhead == null || p.DistanceAhead > 14f) return RivalStateFactory.Create(rival.Role);
 
             DriveAlongTrack(rival, p, side * rival.MaxLaneOffset);
             return null;
