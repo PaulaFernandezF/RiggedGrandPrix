@@ -1265,6 +1265,60 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &726714834
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 726714835}
+  - component: {fileID: 726714836}
+  m_Layer: 0
+  m_Name: Rivales
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &726714835
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 726714834}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &726714836
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 726714834}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 60dff32e3b1143d479371f0ef2a4cbfb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RiggedGrandPrix.AI.RivalSpawner
+  player: {fileID: 980884293}
+  rivalCount: 5
+  characters:
+  - {fileID: 11400000, guid: 585262ddf9e76754b88f8ab34683ddd9, type: 2}
+  - {fileID: 11400000, guid: 8ad8a927e84c34841b1efa60a68a3ff0, type: 2}
+  - {fileID: 11400000, guid: ca4d66e38ba48304db02e63e8da133a6, type: 2}
+  - {fileID: 11400000, guid: cb6f9221f320c21438467d2ca9d05207, type: 2}
+  - {fileID: 11400000, guid: 861eefae0dc0afd42b65e0fe42d98425, type: 2}
+  - {fileID: 11400000, guid: 3004419e1fa4d3641a94e4d13df0a006, type: 2}
+  rivalSpeedFactor: 0.95
 --- !u!1 &742575847
 GameObject:
   m_ObjectHideFlags: 0
@@ -2348,3 +2402,4 @@ SceneRoots:
   - {fileID: 614544407}
   - {fileID: 580392650}
   - {fileID: 1326108763}
+  - {fileID: 726714835}
