@@ -15,5 +15,12 @@ namespace RiggedGrandPrix.AI
         public float DistanceAhead;       // metros hasta él
         public float AheadLateral;        // en qué lado de la pista va ese kart
         public float StuckTime;           // segundos intentando avanzar sin moverse
+
+        // ---- El jugador (para los roles Blocker y Hunter) ----
+        public KartController PlayerKart;
+        /// <summary>Metros por la pista hasta el jugador: + = el jugador va delante, - = va detrás.</summary>
+        public float PlayerDelta;
+        /// <summary>En qué lado de la pista va el jugador.</summary>
+        public float PlayerLateral;
     }
 }
