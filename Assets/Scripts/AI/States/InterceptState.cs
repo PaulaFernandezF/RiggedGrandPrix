@@ -8,7 +8,7 @@ namespace RiggedGrandPrix.AI
         public override void Enter(RivalFSMInput rival)
         {
             base.Enter(rival);
-            rival.SpeedBoost = 1.1f;
+            rival.SpeedBoost = 1.05f;
         }
 
         public override void Exit(RivalFSMInput rival) => rival.SpeedBoost = 1f;

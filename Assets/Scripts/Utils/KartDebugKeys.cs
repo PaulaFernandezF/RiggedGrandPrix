@@ -25,6 +25,8 @@ namespace RiggedGrandPrix.Utils
             if (kb.digit2Key.wasPressedThisFrame) kart.AddModifier(new SlowModifier(0.5f, 3f));
             if (kb.digit3Key.wasPressedThisFrame) kart.AddModifier(new TurnPenaltyModifier(0.4f, 3f));
             if (kb.rKey.wasPressedThisFrame) kart.ResetToSpawn();
+            if (kb.tKey.wasPressedThisFrame)   // T: dispara todas las trampas (para probar la sección F)
+                foreach (var h in Hazards.CityHazard.All) h.Trigger(2f);
         }
 
         private void OnGUI()
@@ -39,7 +41,7 @@ namespace RiggedGrandPrix.Utils
                 $"Aceleración: {s.Acceleration:F1}   Giro: {s.TurnSpeed:F0} °/s   Peso: {s.Weight:F1}\n" +
                 $"En suelo: {kart.IsGrounded}   Derrapando: {kart.IsDrifting}\n" +
                 $"Modificadores: {mods}\n" +
-                "Teclas: 1 turbo · 2 frenazo · 3 dirección torpe · R salida");
+                "Teclas: 1 turbo · 2 frenazo · 3 dirección torpe · R salida · T trampas");
         }
     }
 }

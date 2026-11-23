@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using RiggedGrandPrix.Hazards;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Splines;
@@ -14,6 +16,7 @@ namespace RiggedGrandPrix.Race
     public class TrackPath : MonoBehaviour
     {
         public const string CheckpointsRootName = "Checkpoints (Circuito)";
+        public const string HazardsRootName = "Trampas (Circuito)";
 
         [Tooltip("En cuántos tramos se divide la vuelta (lo usará el Director).")]
         [SerializeField] private int segmentCount = 12;
@@ -27,6 +30,10 @@ namespace RiggedGrandPrix.Race
         [SerializeField] private int checkpointCount = 10;
         [SerializeField] private float checkpointWidth = 16f;
         [SerializeField] private float checkpointHeight = 4f;
+
+        [Header("Trampas del Director")]
+        [SerializeField] private HazardKind hazardKind = HazardKind.TrafficLight;
+        [SerializeField] private int hazardCount = 4;
 
         private SplineContainer container;
 
@@ -130,6 +137,52 @@ namespace RiggedGrandPrix.Race
             if (!Application.isPlaying) UnityEditor.Undo.RegisterCreatedObjectUndo(root, CheckpointsRootName);
 #endif
             return root;
+        }
+
+        /// <summary>Reparte 'count' trampas por la vuelta, alternando los tipos indicados.</summary>
+        public GameObject CreateHazards(IList<HazardKind> kinds, int count, float roadWidth)
+        {
+            var old = GameObject.Find(HazardsRootName);
+            if (old != null)
+            {
+                if (Application.isPlaying) { old.SetActive(false); Destroy(old); }
+                else DestroyImmediate(old);
+            }
+            var root = new GameObject(HazardsRootName);
+            if (kinds == null || kinds.Count == 0) return root;
+
+            for (int i = 0; i < count; i++)
+            {
+                float t = 0.08f + (float)i / count + 0.3f / count;   // repartidas, lejos de la salida
+                var kind = kinds[i % kinds.Count];
+                var go = new GameObject($"{kind} {i + 1}");
+                go.SetActive(false); // así su Awake se ejecuta cuando ya sabe el ancho de la carretera
+                go.transform.SetParent(root.transform, true);
+                go.transform.SetPositionAndRotation(PointAt(t), Quaternion.LookRotation(TangentAt(t), Vector3.up));
+                CityHazard h = kind switch
+                {
+                    HazardKind.FloodGate => go.AddComponent<FloodGateHazard>(),
+                    HazardKind.TrainCrossing => go.AddComponent<TrainCrossingHazard>(),
+                    HazardKind.ShortcutGate => go.AddComponent<ShortcutGate>(),
+                    HazardKind.TaxiTraffic => go.AddComponent<TaxiTrafficHazard>(),
+                    HazardKind.Roadworks => go.AddComponent<RoadworksHazard>(),
+                    HazardKind.Sandstorm => go.AddComponent<SandstormHazard>(),
+                    _ => go.AddComponent<TrafficLightHazard>()
+                };
+                h.SetRoadWidth(roadWidth);
+                go.SetActive(true);
+            }
+#if UNITY_EDITOR
+            if (!Application.isPlaying) UnityEditor.Undo.RegisterCreatedObjectUndo(root, HazardsRootName);
+#endif
+            return root;
+        }
+
+        [ContextMenu("Generar trampas")]
+        private void GenerateHazardsMenu()
+        {
+            var road = GetComponent<RoadMeshBuilder>();
+            CreateHazards(new[] { hazardKind }, hazardCount, road != null ? road.Width : 12f);
         }
 
 #if UNITY_EDITOR

@@ -107,6 +107,12 @@ namespace RiggedGrandPrix.Race
             if (!byKart.TryGetValue(kart, out var t) || t.Finished) return;
             if (cp.index != t.NextCheckpoint) return; // hay que cruzarlos en orden (no vale atajar)
 
+            // Cronometra el tramo recorrido desde el checkpoint anterior (lo usa el Director)
+            if (t.LastCheckpointTime >= 0f)
+                RaceEvents.RaiseSegmentTimed(kart, t.LastSegment, RaceTime - t.LastCheckpointTime);
+            t.LastCheckpointTime = RaceTime;
+            t.LastSegment = cp.segment;
+
             if (cp.index == 0) // cruza la meta habiendo pasado por todos
             {
                 t.Lap++;

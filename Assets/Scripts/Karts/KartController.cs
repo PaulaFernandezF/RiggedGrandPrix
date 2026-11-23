@@ -120,6 +120,20 @@ namespace RiggedGrandPrix.Karts
             RebuildStats();
         }
 
+        /// <summary>
+        /// Punto único de entrada de los efectos negativos (trampas y, en la sección E, power-ups rivales).
+        /// Avisa por RaceEvents.KartHit (Observer). En la E se añadirá aquí el escudo.
+        /// </summary>
+        public bool TakeHit(StatModifier effect)
+        {
+            AddModifier(effect);
+            Race.RaceEvents.RaiseKartHit(this);
+            return true;
+        }
+
+        /// <summary>Empujón físico (golpes de trampas y obstáculos).</summary>
+        public void Knock(Vector3 velocityChange) => rb.AddForce(velocityChange, ForceMode.VelocityChange);
+
         /// <summary>Vuelve a la salida, parado y sin efectos.</summary>
         public void ResetToSpawn()
         {
