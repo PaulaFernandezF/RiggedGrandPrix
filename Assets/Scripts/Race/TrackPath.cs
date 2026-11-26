@@ -18,6 +18,8 @@ namespace RiggedGrandPrix.Race
         public const string CheckpointsRootName = "Checkpoints (Circuito)";
         public const string HazardsRootName = "Trampas (Circuito)";
 
+        public const string PowerUpsRootName = "PowerUps (Circuito)";
+
         [Tooltip("En cuántos tramos se divide la vuelta (lo usará el Director).")]
         [SerializeField] private int segmentCount = 12;
 
@@ -81,7 +83,43 @@ namespace RiggedGrandPrix.Race
         public static float ForwardDelta(float from, float to) => Wrap(to - from);
 
         // ---------------- Generación ----------------
+        /// <summary>Pone 3 filas de 4 cajas de power-ups repartidas por la vuelta.</summary>
+        public GameObject CreatePowerUpBoxes(float roadWidth)
+        {
+            var old = GameObject.Find(PowerUpsRootName);
+            if (old != null)
+            {
+                if (Application.isPlaying) { old.SetActive(false); Destroy(old); }
+                else DestroyImmediate(old);
+            }
+            var root = new GameObject(PowerUpsRootName);
+            float[] rows = { 0.15f, 0.42f, 0.7f };
+            float lane = roadWidth / 4f;
+            foreach (float t in rows)
+            {
+                for (int l = 0; l < 4; l++)
+                {
+                    var box = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                    box.name = "PowerUpBox";
+                    box.transform.SetParent(root.transform, true);
+                    box.transform.position = PointAt(t) + RightAt(t) * ((l - 1.5f) * lane) + Vector3.up * 1f;
+                    box.transform.rotation = Quaternion.Euler(45f, 0f, 45f);
+                    box.transform.localScale = Vector3.one * 1.1f;
+                    box.AddComponent<PowerUps.PowerUpBox>();
+                }
+            }
+#if UNITY_EDITOR
+            if (!Application.isPlaying) UnityEditor.Undo.RegisterCreatedObjectUndo(root, PowerUpsRootName);
+#endif
+            return root;
+        }
 
+        [ContextMenu("Generar cajas de power-ups")]
+        private void GeneratePowerUpBoxesMenu()
+        {
+            var road = GetComponent<RoadMeshBuilder>();
+            CreatePowerUpBoxes(road != null ? road.Width : 12f);
+        }
         /// <summary>
         /// Crea una spline cerrada con forma de óvalo ondulado.
         /// Usa r(θ) = R·(1 + a·sin(2θ) + b·sin(3θ)): como el radio siempre es positivo,

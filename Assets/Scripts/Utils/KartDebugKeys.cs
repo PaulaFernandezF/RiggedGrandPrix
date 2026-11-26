@@ -35,11 +35,12 @@ namespace RiggedGrandPrix.Utils
             var s = kart.Stats;
             string mods = kart.Modifiers.Count == 0 ? "ninguno" : "";
             foreach (var m in kart.Modifiers) mods += m.GetType().Name + " ";
-            GUI.Label(new Rect(10, 10, 900, 140),
+            GUI.Label(new Rect(10, 10, 900, 170),
                 $"Piloto: {(kart.Character != null ? kart.Character.displayName : "-")}\n" +
                 $"Velocidad: {kart.ForwardSpeed * 3.6f:F0} km/h  (máx {s.MaxSpeed * 3.6f:F0})\n" +
                 $"Aceleración: {s.Acceleration:F1}   Giro: {s.TurnSpeed:F0} °/s   Peso: {s.Weight:F1}\n" +
                 $"En suelo: {kart.IsGrounded}   Derrapando: {kart.IsDrifting}\n" +
+                $"Objeto: {(kart.HeldPowerUp != null ? kart.HeldPowerUp.Type.ToString() : "ninguno")} [Espacio]   Escudo: {kart.ShieldActive}\n" +
                 $"Modificadores: {mods}\n" +
                 "Teclas: 1 turbo · 2 frenazo · 3 dirección torpe · R salida · T trampas");
         }
