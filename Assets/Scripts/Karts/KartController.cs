@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using RiggedGrandPrix.Data;
 using RiggedGrandPrix.Karts.Stats;
 using UnityEngine;
+using RiggedGrandPrix.PowerUps;
 
 namespace RiggedGrandPrix.Karts
 {
@@ -45,6 +46,33 @@ namespace RiggedGrandPrix.Karts
         public float ForwardSpeed => Vector3.Dot(rb.linearVelocity, transform.forward);
         public bool IsGrounded { get; private set; }
         public bool IsDrifting { get; private set; }
+
+        // ---- Power-ups ----
+        private PowerUp heldPowerUp;
+        private float shieldTimeLeft;
+        public PowerUp HeldPowerUp => heldPowerUp;
+        public bool ShieldActive => shieldTimeLeft > 0f;
+
+        /// <summary>Solo se puede llevar un objeto a la vez. Devuelve false si ya llevaba uno.</summary>
+        public bool ReceivePowerUp(PowerUp powerUp)
+        {
+            if (heldPowerUp != null) return false;
+            heldPowerUp = powerUp;
+            return true;
+        }
+
+        public void ActivateShield(float duration) => shieldTimeLeft = duration;
+
+        private void Update()
+        {
+            if (shieldTimeLeft > 0f) shieldTimeLeft -= Time.deltaTime;
+            if (heldPowerUp != null && input != null && input.WantsUsePowerUp())
+            {
+                var p = heldPowerUp;
+                heldPowerUp = null;
+                p.Use(this);
+            }
+        }
 
         // ---- Registro de todos los karts (para el RaceManager) ----
         public static IReadOnlyList<KartController> All => all;
@@ -121,11 +149,16 @@ namespace RiggedGrandPrix.Karts
         }
 
         /// <summary>
-        /// Punto único de entrada de los efectos negativos (trampas y, en la sección E, power-ups rivales).
+        /// Punto único de entrada de los efectos negativos (trampas y power-ups rivales).
         /// Avisa por RaceEvents.KartHit (Observer). En la E se añadirá aquí el escudo.
         /// </summary>
         public bool TakeHit(StatModifier effect)
         {
+            if (ShieldActive)
+            {
+                shieldTimeLeft = 0f;   // el escudo para el golpe y se gasta
+                return false;
+            }
             AddModifier(effect);
             Race.RaceEvents.RaiseKartHit(this);
             return true;
@@ -138,6 +171,8 @@ namespace RiggedGrandPrix.Karts
         public void ResetToSpawn()
         {
             modifiers.Clear();
+            heldPowerUp = null;
+            shieldTimeLeft = 0f;
             RebuildStats();
             rb.position = spawnPosition;
             rb.rotation = spawnRotation;

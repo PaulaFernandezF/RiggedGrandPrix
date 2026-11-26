@@ -22,6 +22,9 @@ namespace RiggedGrandPrix.AI
         public float Steer { get; private set; }
         public bool Drift { get; private set; }
 
+        /// <summary>De momento los rivales no usan objetos (lo harán en la E.2).</summary>
+        public bool WantsUsePowerUp() => false;
+
         public KartController Kart { get; private set; }
         public TrackPath Track { get; private set; }
         public float TrackLength { get; private set; } = 1f;

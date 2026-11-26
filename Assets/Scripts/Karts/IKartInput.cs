@@ -14,5 +14,8 @@ namespace RiggedGrandPrix.Karts
 
         /// <summary>True mientras se mantiene el botón de derrape.</summary>
         bool Drift { get; }
+
+        /// <summary>True en el frame en que se pulsa "usar objeto".</summary>
+        bool WantsUsePowerUp();
     }
 }

@@ -13,6 +13,14 @@ namespace RiggedGrandPrix.Karts
         public float Steer { get; private set; }
         public bool Drift { get; private set; }
 
+        public bool WantsUsePowerUp()
+        {
+            var kb = Keyboard.current;
+            var pad = Gamepad.current;
+            return (kb != null && kb.spaceKey.wasPressedThisFrame) ||
+                   (pad != null && pad.buttonSouth.wasPressedThisFrame);
+        }
+
         private void Update()
         {
             float throttle = 0f, steer = 0f;
