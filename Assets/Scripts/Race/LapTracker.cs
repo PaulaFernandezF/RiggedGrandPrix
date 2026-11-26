@@ -12,6 +12,8 @@ namespace RiggedGrandPrix.Race
         public int NextCheckpoint = 1;  // la salida está justo después de la meta (checkpoint 0)
         public bool Finished;
         public float FinishTime;
+        public float LastCheckpointTime = -1f;  // cuándo cruzó el último checkpoint (para cronometrar tramos)
+        public int LastSegment;
 
         public LapTracker(KartController kart, bool isPlayer)
         {
@@ -25,6 +27,8 @@ namespace RiggedGrandPrix.Race
             NextCheckpoint = 1;
             Finished = false;
             FinishTime = 0f;
+            LastCheckpointTime = -1f;
+            LastSegment = 0;
         }
     }
 }
